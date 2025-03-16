@@ -32,5 +32,6 @@ jobs:
           mvn clean package -DskipTests
 
       - name: Run tests
-        run: mvn test  # Runs the test cases
-
+        run: |
+          cd kafka-consumer
+          mvn test
