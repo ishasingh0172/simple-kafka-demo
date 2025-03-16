@@ -1,0 +1,36 @@
+name: PR Checks (Java)
+
+on:
+  pull_request:
+    branches:
+      - main  # Runs only for PRs targeting the main branch
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'  # Use 'temurin' (Eclipse Temurin) or 'adopt'
+          java-version: '11'       # Change this to match your project’s Java version
+
+      - name: Cache Maven dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-maven-
+
+      - name: Build the project
+        run: |
+          cd kafka-consumer
+          mvn clean package -DskipTests
+
+      - name: Run tests
+        run: mvn test  # Runs the test cases
+
